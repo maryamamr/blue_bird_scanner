@@ -15,27 +15,33 @@ class BlueBirdScanner {
   static const _STOP_SCANNER = "stopScanner";
   static const _ON_DECODED = "onDecoded";
   static const _ON_ERROR = "onError";
+  static const _SOFT_SCANNER_ON = "softScanOn";
+  static const _SOFT_SCANNER_OFF = "softScanOff";
 
-  late MethodChannel _channel;
-  ScannerCallBack? _scannerCallBack;
-  late BlueBirdModel _model;
+  MethodChannel _channel;
+  ScannerCallBack _scannerCallBack;
+  BlueBirdModel _model;
 
-  BlueBirdScanner({BlueBirdModel model = BlueBirdModel.ef400_500, ScannerCallBack? scannerCallBack}) {
+  BlueBirdScanner(
+      {BlueBirdModel model = BlueBirdModel.ef400_500,
+      ScannerCallBack scannerCallBack}) {
     _channel = const MethodChannel(_METHOD_CHANNEL);
     _channel.setMethodCallHandler(_onMethodCall);
-    _scannerCallBack = scannerCallBack;
+    this._scannerCallBack = scannerCallBack;
     initScanner(model);
   }
-  BlueBirdModel? get model => _model;
+  BlueBirdModel get model => _model;
 
   Future initScanner(BlueBirdModel value) {
     _model = value;
-    return _channel.invokeMethod(_INIT_SCANNER, _model.name);
+    return _channel.invokeMethod(
+        _INIT_SCANNER, BlueBirdModelUtils.get().nameOf(_model));
   }
 
-  set scannerCallBack(ScannerCallBack scannerCallBack) => _scannerCallBack = scannerCallBack;
+  set scannerCallBack(ScannerCallBack scannerCallBack) =>
+      _scannerCallBack = scannerCallBack;
 
-  Future<void> _onMethodCall(MethodCall call) async {
+  Future _onMethodCall(MethodCall call) {
     try {
       switch (call.method) {
         case _ON_DECODED:
@@ -47,11 +53,10 @@ class BlueBirdScanner {
         default:
           print(call.arguments);
       }
-    }
-    catch(e)
-    {
+    } catch (e) {
       print(e);
     }
+    return null;
   }
 
   /// Called when decoder has successfully decoded the code
@@ -59,8 +64,8 @@ class BlueBirdScanner {
   /// Note that this method always called on a worker thread
   ///
   /// @param code Encapsulates the result of decoding a barcode within an image
-  void onDecoded(String? code) {
-    _scannerCallBack?.onDecoded(code);
+  void onDecoded(String code) {
+    if (_scannerCallBack != null) _scannerCallBack.onDecoded(code);
   }
 
   /// Called when error has occurred
@@ -69,10 +74,10 @@ class BlueBirdScanner {
   ///
   /// @param error Exception that has been thrown
   void onError(Exception error) {
-    _scannerCallBack?.onError(error);
+    if (_scannerCallBack != null) _scannerCallBack.onError(error);
   }
 
-  Future startScanner(){
+  Future startScanner() {
     return _channel.invokeMethod(_START_SCANNER);
   }
 
@@ -88,5 +93,11 @@ class BlueBirdScanner {
     return _channel.invokeMethod(_STOP_SCANNER);
   }
 
+  Future startSoftScanner() {
+    return _channel.invokeMethod(_SOFT_SCANNER_ON);
+  }
 
+  Future stopSoftScanner() {
+    return _channel.invokeMethod(_SOFT_SCANNER_OFF);
+  }
 }

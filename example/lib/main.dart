@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 void main() => runApp(const MyApp());
 
 class MyApp extends StatefulWidget {
-  const MyApp({Key? key}) : super(key: key);
+  const MyApp({Key key}) : super(key: key);
 
 
   @override
@@ -13,7 +13,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> implements ScannerCallBack{
   final blueBirdScanner = BlueBirdScanner();
-  String? _scannedCode = 'Empty';
+  String _scannedCode = 'Empty';
   String _scannedStatus = 'Stopped';
 
   @override
@@ -23,7 +23,7 @@ class _MyAppState extends State<MyApp> implements ScannerCallBack{
   }
 
   @override
-  void onDecoded(String? result) {
+  void onDecoded(String result) {
     setState(() {
       _scannedCode = result;
     });

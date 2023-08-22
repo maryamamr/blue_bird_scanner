@@ -51,4 +51,6 @@ public abstract class BlueBirdScanner implements ScannerCallBack
     public abstract boolean resumeScanner();
     public abstract boolean pauseScanner();
     public abstract boolean stopScanner();
+    public abstract boolean softScanOff();
+    public abstract boolean softScanOn();
 }

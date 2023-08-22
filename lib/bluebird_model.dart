@@ -1,11 +1,13 @@
 
-import 'package:flutter/foundation.dart';
-
 enum BlueBirdModel{
   ef400_500,
 }
 
-extension BlueBirdModelUtils on BlueBirdModel
+class BlueBirdModelUtils
 {
-  String get name => describeEnum(this);
+  BlueBirdModelUtils.get();
+
+  String nameOf(BlueBirdModel value) {
+    return value != null ? value.toString().split(".")[1] : null;
+  }
 }

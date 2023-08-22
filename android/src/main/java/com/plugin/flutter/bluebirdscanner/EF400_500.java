@@ -11,7 +11,7 @@ import android.content.IntentFilter;
 
 public class EF400_500 extends BlueBirdScanner
 {
-    static class Constants {
+    class Constants {
         public static final String STATUS_CLOSE = "STATUS_CLOSE";
         public static final String STATUS_OPEN = "STATUS_OPEN";
         public static final String STATUS_TRIGGER_ON = "STATUS_TRIGGER_ON";
@@ -208,6 +208,41 @@ public class EF400_500 extends BlueBirdScanner
             isOpened = false;
         }
         catch(Exception e)
+        {
+            e.getMessage();
+        }
+        return true;
+    }
+
+    @Override
+    public boolean softScanOff() {
+
+        registerReceiver();
+        try
+        {
+            Intent intent = new Intent();
+            intent.setAction(Constants.ACTION_BARCODE_SET_TRIGGER);
+            intent.putExtra(Constants.EXTRA_INT_DATA2, 0);
+            intent.putExtra(Constants.EXTRA_INT_DATA3,32);
+            context.sendBroadcast(intent);
+        }catch(Exception e)
+        {
+            e.getMessage();
+        }
+        return true;
+    }
+
+    @Override
+    public boolean softScanOn() {
+        registerReceiver();
+        try
+        {
+            Intent intent = new Intent();
+            intent.setAction(Constants.ACTION_BARCODE_SET_TRIGGER);
+            intent.putExtra(Constants.EXTRA_INT_DATA2, 1);
+            intent.putExtra(Constants.EXTRA_INT_DATA3,24);
+            context.sendBroadcast(intent);
+        }catch(Exception e)
         {
             e.getMessage();
         }
